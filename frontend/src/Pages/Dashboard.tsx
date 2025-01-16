@@ -6,9 +6,20 @@ import PlusIcon from "../Icons/PlusIcon";
 import ShareIcon from "../Icons/ShareIcon";
 import Card from "../components/ui/Card";
 import YoutubeIcon from "../Icons/YoutubeIcon";
+import { useQuery } from "react-query";
+import axios from "axios";
 
 const Dashboard = () => {
   const [modalOpen, setModalOpen] = useState(false);
+  const getContentQuery = useQuery({
+    queryKey: ["content"],
+    queryFn: async () => {
+      return await axios.get("http://localhost:3000/api/v1/content", {
+        withCredentials: true,
+      });
+    },
+  });
+  console.log("contrent query", getContentQuery.data);
   return (
     <div>
       <AddContentModal
@@ -39,19 +50,15 @@ const Dashboard = () => {
               startIcon={<ShareIcon />}
             />
           </div>
-          <div className="flex gap-2">
-            <Card
-              title="Project ideas da sasdas adas dasd adas"
-              cardIconVariant={<YoutubeIcon />}
-              type="youtube"
-              link="https://www.youtube.com/watch?v=W_OSkrWQEms"
-            />
-            <Card
-              title="Project ideas da sasdas adas dasd adas"
-              cardIconVariant={<YoutubeIcon />}
-              type="twitter"
-              link="https://x.com/andrewjclare/status/1878910628565594244"
-            />
+          <div className="flex gap-2 flex-wrap">
+            {getContentQuery.data?.data?.contents.map((item: any) => (
+              <Card
+                title={item.title}
+                cardIconVariant={<YoutubeIcon />}
+                type={item.type}
+                link={item.link}
+              />
+            ))}
           </div>
         </div>
       </div>

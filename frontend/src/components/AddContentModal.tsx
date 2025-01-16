@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useRef } from "react";
 import Button from "./ui/Button";
 import CloseIcon from "../Icons/CloseIcon";
 import Input from "./ui/Input";
+import { useMutation, useQueryClient } from "react-query";
+import axios from "axios";
 
 interface addContentModalProp {
   open: boolean;
@@ -9,6 +11,35 @@ interface addContentModalProp {
 }
 
 const AddContentModal = (props: addContentModalProp) => {
+  const titleRef = useRef();
+  const linkRef = useRef();
+  const queryClient = useQueryClient();
+  const contentMutation = useMutation({
+    mutationFn: async (content: {
+      title: string;
+      link: string;
+      type: string;
+    }) => {
+      return await axios.post(
+        "http://localhost:3000/api/v1/content",
+        {
+          title: content.title,
+          link: content.link,
+          type: content.type,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["content"] });
+      props.onClose();
+    },
+    onError: (error) => {
+      console.log("error", error);
+    },
+  });
   return (
     <div>
       {props.open && (
@@ -20,10 +51,21 @@ const AddContentModal = (props: addContentModalProp) => {
             >
               <CloseIcon />
             </div>
-            <Input placeholder="Enter title" />
-            <Input placeholder="Enter URL" />
+            <Input placeholder="Enter title" reference={titleRef} />
+            <Input placeholder="Enter URL" reference={linkRef} />
             <div className="flex justify-center">
-              <Button size="sm" title="Submit" variant="Primary" />
+              <Button
+                size="sm"
+                title="Submit"
+                variant="Primary"
+                onClick={() => {
+                  contentMutation.mutate({
+                    title: titleRef.current?.value,
+                    link: linkRef.current?.value,
+                    type: "youtube",
+                  });
+                }}
+              />
             </div>
           </div>
         </div>

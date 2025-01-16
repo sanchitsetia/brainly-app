@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 export const protectRoutes =  (req: Request, res: Response, next: NextFunction): any=> {  
   try {
     const token = req.cookies.token;
+    console.log("token",token)
     const validToken = jwt.verify(token, process.env.JWT_SECRET!);
     if(!validToken){
       return res.status(401).json({

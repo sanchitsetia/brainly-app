@@ -16,7 +16,7 @@ exports.connectDB = exports.LinkModel = exports.TagsModel = exports.ContentModel
 const mongoose_1 = __importDefault(require("mongoose"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
-const contentType = ["image", "video", "audio", "article"];
+const contentType = ["youtube", "twitter"];
 const userSchema = new mongoose_1.default.Schema({
     username: {
         type: String,

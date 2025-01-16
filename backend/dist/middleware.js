@@ -8,6 +8,7 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const protectRoutes = (req, res, next) => {
     try {
         const token = req.cookies.token;
+        console.log("token", token);
         const validToken = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
         if (!validToken) {
             return res.status(401).json({

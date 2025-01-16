@@ -7,6 +7,7 @@ import dotenv from "dotenv";
 import { protectRoutes } from "./middleware";
 import cookieParser from "cookie-parser";
 import { random } from "./utilts";
+import cors from "cors"
 dotenv.config();
 
 
@@ -14,6 +15,11 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true
+}))
+
 
 
 app.post("/api/v1/signup", async (req:Request, res:Response):Promise<any> => {
